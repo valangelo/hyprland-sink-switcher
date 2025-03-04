@@ -4,11 +4,12 @@
 SCRIPT_DIR="$HOME/.config/hypr/UserScripts/hypr-sink-switcher"
 SCRIPT_NAME="audio_sink_switcher.sh"
 SCRIPT_PATH="$SCRIPT_DIR/$SCRIPT_NAME"
+KEYBINDS_PATH_FILE="$SCRIPT_DIR/keybinds_path.txt" # Store the keybinds file path here
 
 # Ensure the directory exists
 mkdir -p "$SCRIPT_DIR"
 
-# Copy the script if it's not already there (adjust the source path as needed)
+# Copy the script if it's not already there
 if [[ ! -f "$SCRIPT_PATH" ]]; then
     echo "Copying $SCRIPT_NAME to $SCRIPT_DIR..."
     cp "$(dirname "$0")/$SCRIPT_NAME" "$SCRIPT_PATH"
@@ -65,7 +66,7 @@ esac
 # Append keybinds if the user didn't skip
 if [[ -n "$CONFIG_PATH" ]]; then
     if [[ -f "$CONFIG_PATH" ]]; then
-        echo "Appending keybinds to $CONFIG_PATH..."
+        echo "Appending keybinds import to $CONFIG_PATH..."
 
         # Check if $mainMod is already defined
         if grep -q "^mainMod =" "$CONFIG_PATH"; then
@@ -74,8 +75,13 @@ if [[ -n "$CONFIG_PATH" ]]; then
             sed -i '/^mainMod =/d' "$KEYBINDS_CONF"
         fi
 
-        cat "$KEYBINDS_CONF" >> "$CONFIG_PATH"
-        echo "Keybinds added successfully!"
+        # Append the source command
+        echo "source=$KEYBINDS_CONF" >> "$CONFIG_PATH"
+
+        # Store the keybinds file path
+        echo "$CONFIG_PATH" > "$KEYBINDS_PATH_FILE"
+
+        echo "Keybinds import added successfully!"
     else
         echo "Error: Config file not found at $CONFIG_PATH. Skipping keybinds append."
     fi
