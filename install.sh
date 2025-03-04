@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Define script path
-SCRIPT_DIR="$HOME/.config/hypr/scripts/hypr-sink-switcher"
+SCRIPT_DIR="$HOME/.config/hypr/UserScripts/hypr-sink-switcher"
 SCRIPT_NAME="audio_sink_switcher.sh"
 SCRIPT_PATH="$SCRIPT_DIR/$SCRIPT_NAME"
 
@@ -36,9 +36,20 @@ fi
 DEFAULT_HYPRCONF="$HOME/.config/hypr/hyprland.conf"
 USER_KEYBINDS="$HOME/.config/hypr/UserConfigs/UserKeybinds.conf"
 
+echo "The following keybindings will be added to your Hyprland config:"
+echo ""
+echo "  🎛  Super + XF86AudioPrev    → Cycle to the previous audio sink"
+echo "  🎛  Super + XF86AudioNext    → Cycle to the next audio sink"
+echo "  🎛  Super + XF86AudioPlay    → Show a launcher to select a sink (without changing default)"
+echo "  🔊  Super + XF86AudioRaise   → Increase volume of the selected sink"
+echo "  🔉  Super + XF86AudioLower   → Decrease volume of the selected sink"
+echo "  🔇  Super + XF86AudioMute    → Mute/unmute the selected sink"
+echo ""
+
+# Ask the user where to append keybinds
 echo "Where do you want to append the keybinds?"
-echo "1) Default                (/.config/hypr/hyprland.conf)"
-echo "2) UserKeybinds.conf ( /.config/hypr/UserConfigs/UserKeybinds.conf)"
+echo "1) Default (hyprland.conf)"
+echo "2) UserKeybinds.conf"
 echo "3) Custom path"
 echo "4) Skip appending keybinds"
 read -p "Enter choice (1/2/3/4): " CHOICE

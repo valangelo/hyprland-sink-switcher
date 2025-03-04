@@ -55,8 +55,8 @@ As someone new to Hyprland, I found managing audio outputs and individual sink v
 Run the following commands:
 
 ```bash
-git clone [https://github.com/valangelo/hypr-sink-switcher.git](https://github.com/valangelo/hypr-sink-switcher.git) ~/.config/hypr/scripts/hypr-sink-switcher
-cd ~/.config/hypr/scripts/hypr-sink-switcher
+git clone https://github.com/valangelo/hyprland-sink-switcher.git ~/.config/hypr/UserScripts/hyprland-sink-switcher
+cd ~/.config/hypr/hyprland-sink-switcher
 ./install.sh
 ```
 During installation, you will be asked where to append keybindings.
