@@ -1,0 +1,11 @@
+# Ignore system files
+.DS_Store
+*.swp
+
+# Ignore compiled binaries (if any)
+*.o
+*.out
+
+# Ignore logs
+logs/
+*.log
