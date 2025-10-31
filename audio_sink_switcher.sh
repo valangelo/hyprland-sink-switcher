@@ -15,7 +15,6 @@ friendly_name() {
         }'
 }
 
-
 # Get the stored sink id (or fallback to the system default)
 get_selected_sink() {
     if [[ -f "$SINK_FILE" ]]; then
@@ -123,7 +122,7 @@ get_volume() {
     fi
 }
 
-# Get icons
+# Get icon
 get_icon() {
     current=$(get_volume)
     if [[ "$current" == "Muted" ]]; then
@@ -137,23 +136,21 @@ get_icon() {
     fi
 }
 
-# Notify
-# Notify
-# Notify
 notify_custom() {
     local sink_name="$1"
     local message="$2"
     local volume=$(get_volume)
     local icon=$(get_icon)
 
-     if [[ "$volume" == "Muted" ]]; then
+    if [[ "$volume" == "Muted" ]]; then
         notify-send -e -h string:x-canonical-private-synchronous:volume_notif -u low -i "$icon" " $sink_name:" " Muted"
     else
         notify-send -e -h int:value:"$volume" -h string:x-canonical-private-synchronous:volume_notif -u low -i "$icon" " $sink_name:" " $message: $volume%"
     fi
 }
+
 change_volume() {
-    local selected_sink new_vol
+    local selected_sink
     selected_sink=$(get_selected_sink)
     if [[ -z "$selected_sink" ]]; then
         notify "No sink selected. Run '$0 select' first."
@@ -196,6 +193,21 @@ apply_sink() {
     fi
 }
 
+watch_sink_changes() {
+    local last_sink current_sink
+    last_sink=$(get_selected_sink)
+    # Use pactl subscribe to watch for changes
+    pactl subscribe | while IFS= read -r line; do
+        if [[ "$line" =~ Event\ \'change\'\ on\ sink ]]; then
+            current_sink=$(pactl info | grep "Default Sink" | awk '{print $3}')
+            if [[ "$current_sink" != "$last_sink" ]]; then
+                last_sink="$current_sink"
+                notify_custom "$(friendly_name "$current_sink")" "Output Device Changed"
+            fi
+        fi
+    done
+}
+
 case "$1" in
     "select") select_sink ;;
     "next") cycle_sink "next" ;;
@@ -204,5 +216,6 @@ case "$1" in
     "+5%") change_volume "+5%" ;;
     "-5%") change_volume "-5%" ;;
     "apply") apply_sink ;;
-    *) echo "Usage: $0 {select|next|prev|mute|+5%|-5%|apply}" ;;
+    "watch") watch_sink_changes ;;
+    *) echo "Usage: $0 {select|next|prev|mute|+5%|-5%|apply|watch}" ;;
 esac
